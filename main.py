@@ -6,36 +6,36 @@ import os
 
 # --- TOKEN ve API KEY ---
 DISCORD_TOKEN = "YOUR_DISCORD_TOKEN"
-LLAMA_KEY = "YOUR_LLAMA_KEY"
+GROK_KEY = "YOUR_GROK_KEY"
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# --- Hermes 3 – Llama 3.1 8B API fonksiyonu ---
-def ask_hermes(message):
+# --- Grok API yazılı cevap ---
+def ask_grok(message):
     url = "https://api.x.ai/v1/chat/completions"
     headers = {
-        "Authorization": f"Bearer {LLAMA_KEY}",
+        "Authorization": f"Bearer {GROK_KEY}",
         "Content-Type": "application/json"
     }
     data = {
-        "model": "Hermes-3-Llama-3.1-8B",
+        "model": "grok-4.1-fast",
         "messages": [{"role": "user", "content": message}]
     }
     r = requests.post(url, json=data, headers=headers)
     r.raise_for_status()
     return r.json()["choices"][0]["message"]["content"]
 
-# --- Yazılı cevap komutu ---
+# --- Yazılı komut ---
 @bot.command()
 async def yaz(ctx, *, text):
-    cevap = ask_hermes(text)
-    await ctx.send(f"🧠 **Hermes:** {cevap}")
+    cevap = ask_grok(text)
+    await ctx.send(f"🧠 **Grok:** {cevap}")
 
-# --- Sesli cevap komutu ---
+# --- Sesli komut ---
 @bot.command()
 async def ses(ctx, *, text):
-    cevap = ask_hermes(text)
+    cevap = ask_grok(text)
     tts = gTTS(cevap, lang="tr")
     tts.save("reply.mp3")
 
